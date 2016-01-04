@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+var db = require('./inc/db'),
+	ARGV = process.argv;
+
+db.connect();
+
+switch(ARGV[2]){
+
+	case 'create':
+		var appName = ARGV[3];
+		if(!appName){
+			console.log('Please provide an app name');
+			process.exit(1);
+		} else {
+			db.createApp(appName, function(err, details){
+				if(err){
+					console.error(err);
+					process.exit(1);
+				}
+				console.log('success', details);
+				process.exit(0);
+			});
+		}
+		break;
+
+	case 'rm':
+		var appName = ARGV[3];
+		if(!appName){
+			console.log('Please provide an app name');
+			process.exit(1);
+		} else {
+			db.rmApp(appName, function(err, details){
+				if(err){
+					console.error(err);
+					process.exit(1);
+				}
+				console.log('success', details);
+				process.exit(0);
+			});
+		}
+		break;
+
+	case 'add-event':
+		var appName = ARGV[3],
+			eventName = ARGV[4],
+			url = ARGV[5];
+
+		if(!appName || !eventName || !url){
+			console.log('Please provide all required arguments\nadd-event <app_name> <event_name> <url>');
+			process.exit(1);
+		} else {
+			db.addEventToApp(appName, eventName, url, function(err, details){
+				if(err){
+					console.error(err);
+					process.exit(1);
+				}
+				console.log('success', details);
+				process.exit(0);
+			});
+		}
+		break;
+
+	default:
+		console.log('./sillysockets <create | rm | add-event>');
+		process.exit(0);
+
+}
